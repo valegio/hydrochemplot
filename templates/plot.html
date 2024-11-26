@@ -1,0 +1,49 @@
+{% extends "layout.html" %}
+
+{% block title %}
+
+Diagrams Plot
+
+{% endblock %}
+
+
+{% block main %}
+
+{% for diagram in diagrams %}
+
+{% if diagram == 'Piper' %}
+<div>
+<h1> Trilinear Piper diagram </h1>
+<img src="static/output/trilinear_piper_plot.png" style='height: 80%; width: 80%; object-fit: contain'>
+<br>
+<br>
+<br>
+{% endif %}
+</div>
+{% if diagram == 'Durov' %}
+<div>
+<h1> Durov diagram</h1>
+<img src="static/output/durov_plot.png" style='height: 80%; width: 80%; object-fit: contain'>
+<br>
+<br>
+<br>
+{% endif %}
+</div>
+{% if diagram == 'Schoeller' %}
+<div>
+<h1> Schoeller diagram </h1>
+<img src="static/output/schoeller_plot.png" style='height: 80%; width: 80%; object-fit: contain'>
+<br>
+<br>
+<br>
+{% endif %}
+</div >
+{% endfor %}
+<div style="text-align:center">
+<h1> Data </h1>
+</div>
+{{ table|safe }}
+
+
+
+{% endblock %}

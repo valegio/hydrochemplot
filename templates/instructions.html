@@ -1,0 +1,70 @@
+{% extends "layout.html" %}
+
+{% block title %}
+
+Instructions
+
+{% endblock %}
+
+
+{% block main %}
+<div class="container">
+<div style="text-align: justify; font-size:1vw">
+<h5> Upload CSV file</h5>
+<p> File must contain columns named 'Sample' and 'Label'</p>
+<p>Trilinear Piper diagram requires geochemical parameters:
+Ca, Mg, Na, K, HCO3, CO3, Cl, and SO4.</p>
+<p>Durov diagram uses geochemical parameters:
+Ca, Mg, Na, K, HCO3, CO3, Cl, SO4, pH, and TDS.</p>
+<p>Schoeller diagram uses geochemical parameters:
+Ca, Mg, Na, K, Cl, SO4, and HCO3.</p>
+</div>
+<div style="text-align: center">
+<img src="static/images/data_instructions.png" style="height: 50%; width: 50%; object-fit: contain;">
+<br><br>
+</div>
+<div style="text-align: justify; font-size:1vw">
+<h4> Select diagrams to plot</h4>
+<h5> Trilinear Piper</h5>
+<p> The cations and anions are shown by separate ternary plots. The apexes of
+    the cation plot are calcium, magnesium and sodium plus potassium cations.
+    The apexes of the anion plot are sulfate, chloride and carbonate plus
+    hydrogen carbonate anions. The two ternary plots are then projected onto a
+    diamond. The diamond is a matrix transformation of a graph of the anions
+    (sulfate + chloride/ total anions) and cations (sodium + potassium/total
+    cations).</p>
+</div>
+<div style="text-align: center">
+<img src="static/images/trilinear_piper_plot.png" style="height: 50%; width: 50%; object-fit: contain;">
+<br><br>
+</div>
+<div style="text-align: justify; font-size:1vw">
+<h5> Durov</h5>
+<p> The trilinear Durov plot is based on the percentage of major ion milliequivalents.
+ The Cations and Anions values are plotted on two separate triangular plots and
+ the data points are projected onto a square grid at the base of each triangle.
+ In addition, the Durov plot allows for the direct comparison of two other
+ groundwater parameters, typically pH and the total dissolved solids (TDS).</p>
+</div>
+<div style="text-align: center">
+<img src="static/images/durov_plot.png" style="height: 50%; width: 50%; object-fit: contain; text-align: center;">
+<br><br>
+</div>
+<div style="text-align: justify; font-size:1vw">
+<h5> Schoeller</h5>
+<p> Schoeller (1962) developed semi-logarithmic plots to represent major ion
+analyses in milliequivalents per liter (meq/L) and to demonstrate different
+hydrochemical water types on the same plot. Although multiple analyses (i.e.
+samples) can be plotted on a Schoeller plot, the number is practically limited
+to a small number as the graph can be difficult to interpret as more data series
+will increase clutter on the plot. However, the plot has the advantage that,
+unlike trilinear plots, actual parameter concentrations are displayed.</p>
+</div>
+<div style="text-align: center">
+<img src="static/images/schoeller_plot.png" style="height: 50%; width: 50%; object-fit: contain">
+</div>
+<br><br>
+<div style="text-align: justify; font-size:1vw">
+</div>
+
+{% endblock %}

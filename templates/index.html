@@ -1,0 +1,45 @@
+{% extends "layout.html" %}
+
+{% block title %}
+    Index
+{% endblock %}
+
+
+{% block main %}
+<script>
+    document.querySelector('form').addEventListener('submit', function(event) {
+    alert('Form submitted');
+    // event.preventDefault(); // Make sure this line is not uncommented
+    });
+</script>
+
+<form action="/" method="post" enctype="multipart/form-data">
+
+    <div class="input-group mb-3 w-50 mx-auto">
+        <input type="file" name="file" accept=".csv">
+
+    </div>
+    <input type="checkbox" id="piper" name="diagram" value="Piper">
+    <label for="piper"> Piper &nbsp;&nbsp;</label>
+    <input type="checkbox" id="durov" name="diagram" value="Durov">
+    <label for="durov"> Durov &nbsp;&nbsp;</label>
+    <input type="checkbox" id="schoeller" name="diagram" value="Schoeller">
+    <label for="schoeller"> Schoeller &nbsp;&nbsp;</label><br><br>
+
+    <input type="submit" value="Submit" name="submit">
+
+</form>
+
+
+<div class="container">
+{% with messages = get_flashed_messages()%}
+{% if messages%}
+    {% for message in messages%}
+    <p>{{message}}</p>
+    {%endfor%}
+    {%endif%}
+    {%endwith%}
+</div>
+
+
+{% endblock %}
