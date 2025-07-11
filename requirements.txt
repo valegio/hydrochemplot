@@ -1,8 +1,8 @@
 Flask==2.3.3
+wqchartpy==0.1.10
+Werkzeug==2.3.7
+matplotlib==3.7.2
+pandas==2.0.3
+numpy==1.25.2
+chardet==5.2.0
 gunicorn==21.2.0
-# Agrega aquí todas las librerías que uses
-# Por ejemplo:
-# pandas
-# numpy
-# matplotlib
-# plotly
