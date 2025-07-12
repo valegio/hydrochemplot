@@ -1,70 +1,332 @@
 {% extends "layout.html" %}
-
 {% block title %}
-
-Instructions
-
+Instrucciones
 {% endblock %}
-
-
 {% block main %}
 <div class="container">
-<div style="text-align: justify; font-size:1vw">
-<h5> Upload CSV file</h5>
-<p> File must contain columns named 'Sample' and 'Label'</p>
-<p>Trilinear Piper diagram requires geochemical parameters:
-Ca, Mg, Na, K, HCO3, CO3, Cl, and SO4.</p>
-<p>Durov diagram uses geochemical parameters:
-Ca, Mg, Na, K, HCO3, CO3, Cl, SO4, pH, and TDS.</p>
-<p>Schoeller diagram uses geochemical parameters:
-Ca, Mg, Na, K, Cl, SO4, and HCO3.</p>
-</div>
-<div style="text-align: center">
-<img src="static/images/data_instructions.png" style="height: 50%; width: 50%; object-fit: contain;">
-<br><br>
-</div>
-<div style="text-align: justify; font-size:1vw">
-<h4> Select diagrams to plot</h4>
-<h5> Trilinear Piper</h5>
-<p> The cations and anions are shown by separate ternary plots. The apexes of
-    the cation plot are calcium, magnesium and sodium plus potassium cations.
-    The apexes of the anion plot are sulfate, chloride and carbonate plus
-    hydrogen carbonate anions. The two ternary plots are then projected onto a
-    diamond. The diamond is a matrix transformation of a graph of the anions
-    (sulfate + chloride/ total anions) and cations (sodium + potassium/total
-    cations).</p>
-</div>
-<div style="text-align: center">
-<img src="static/images/trilinear_piper_plot.png" style="height: 50%; width: 50%; object-fit: contain;">
-<br><br>
-</div>
-<div style="text-align: justify; font-size:1vw">
-<h5> Durov</h5>
-<p> The trilinear Durov plot is based on the percentage of major ion milliequivalents.
- The Cations and Anions values are plotted on two separate triangular plots and
- the data points are projected onto a square grid at the base of each triangle.
- In addition, the Durov plot allows for the direct comparison of two other
- groundwater parameters, typically pH and the total dissolved solids (TDS).</p>
-</div>
-<div style="text-align: center">
-<img src="static/images/durov_plot.png" style="height: 50%; width: 50%; object-fit: contain; text-align: center;">
-<br><br>
-</div>
-<div style="text-align: justify; font-size:1vw">
-<h5> Schoeller</h5>
-<p> Schoeller (1962) developed semi-logarithmic plots to represent major ion
-analyses in milliequivalents per liter (meq/L) and to demonstrate different
-hydrochemical water types on the same plot. Although multiple analyses (i.e.
-samples) can be plotted on a Schoeller plot, the number is practically limited
-to a small number as the graph can be difficult to interpret as more data series
-will increase clutter on the plot. However, the plot has the advantage that,
-unlike trilinear plots, actual parameter concentrations are displayed.</p>
-</div>
-<div style="text-align: center">
-<img src="static/images/schoeller_plot.png" style="height: 50%; width: 50%; object-fit: contain">
-</div>
-<br><br>
-<div style="text-align: justify; font-size:1vw">
+    <!-- Sección de carga de archivo -->
+    <div class="instruction-section">
+        <h3 class="section-title">📁 Carga de Archivo CSV</h3>
+        <div class="requirements-box">
+            <h4>Requisitos del archivo:</h4>
+            <ul class="requirements-list">
+                <li><strong>Columnas obligatorias:</strong> 'Sample' y 'Label'</li>
+                <li><strong>Columnas opcionales:</strong> 'Color'</li>
+                <li><strong>Formato:</strong> Archivo CSV válido</li>
+            </ul>
+        </div>
+        
+        <div class="parameters-grid">
+            <div class="parameter-card">
+                <h5>Diagrama Trilinear Piper</h5>
+                <p><strong>Parámetros requeridos:</strong></p>
+                <p>Ca, Mg, Na, K, HCO₃, CO₃, Cl, SO₄</p>
+            </div>
+            <div class="parameter-card">
+                <h5>Diagrama Durov</h5>
+                <p><strong>Parámetros requeridos:</strong></p>
+                <p>Ca, Mg, Na, K, HCO₃, CO₃, Cl, SO₄, pH, TDS</p>
+            </div>
+            <div class="parameter-card">
+                <h5>Diagrama Schoeller</h5>
+                <p><strong>Parámetros requeridos:</strong></p>
+                <p>Ca, Mg, Na, K, Cl, SO₄, HCO₃</p>
+            </div>
+        </div>
+        
+        <div class="example-section">
+            <h4>Ejemplo de estructura de datos:</h4>
+            <img src="static/images/data_instructions.png" 
+                 alt="Ejemplo de estructura de datos CSV" 
+                 class="example-image">
+        </div>
+    </div>
+
+    <!-- Sección de diagramas -->
+    <div class="instruction-section">
+        <h3 class="section-title">📊 Tipos de Diagramas Disponibles</h3>
+        
+        <!-- Trilinear Piper -->
+        <div class="diagram-card">
+            <h4 class="diagram-title">Diagrama Trilinear Piper</h4>
+            <div class="diagram-content">
+                <div class="diagram-description">
+                    <p>El diagrama Piper combina dos gráficos ternarios que representan cationes y aniones por separado:</p>
+                    <ul>
+                        <li><strong>Triángulo de cationes:</strong> Calcio, Magnesio y Sodio + Potasio</li>
+                        <li><strong>Triángulo de aniones:</strong> Sulfato, Cloruro y Carbonato + Bicarbonato</li>
+                    </ul>
+                    <p>Los puntos de ambos triángulos se proyectan sobre un diamante central que representa la composición química total del agua.</p>
+                </div>
+                <div class="diagram-image">
+                    <img src="static/images/trilinear_piper_plot.png" 
+                         alt="Ejemplo de diagrama Trilinear Piper" 
+                         class="plot-image">
+                </div>
+            </div>
+        </div>
+
+        <!-- Durov -->
+        <div class="diagram-card">
+            <h4 class="diagram-title">Diagrama Durov</h4>
+            <div class="diagram-content">
+                <div class="diagram-description">
+                    <p>El diagrama Durov extiende el concepto trilinear incluyendo parámetros adicionales:</p>
+                    <ul>
+                        <li><strong>Base triangular:</strong> Porcentajes de miliequivalentes de iones mayores</li>
+                        <li><strong>Proyección cuadrada:</strong> Permite comparar pH y TDS directamente</li>
+                        <li><strong>Ventaja:</strong> Análisis integral de la calidad del agua</li>
+                    </ul>
+                    <p>Ideal para estudios hidrogeoquímicos que requieren correlacionar composición iónica con parámetros fisicoquímicos.</p>
+                </div>
+                <div class="diagram-image">
+                    <img src="static/images/durov_plot.png" 
+                         alt="Ejemplo de diagrama Durov" 
+                         class="plot-image">
+                </div>
+            </div>
+        </div>
+
+        <!-- Schoeller -->
+        <div class="diagram-card">
+            <h4 class="diagram-title">Diagrama Schoeller</h4>
+            <div class="diagram-content">
+                <div class="diagram-description">
+                    <p>El diagrama Schoeller utiliza escala semi-logarítmica para representar concentraciones:</p>
+                    <ul>
+                        <li><strong>Unidades:</strong> Miliequivalentes por litro (meq/L)</li>
+                        <li><strong>Ventaja:</strong> Muestra concentraciones reales de parámetros</li>
+                        <li><strong>Limitación:</strong> Mejor para pocas muestras para evitar saturación visual</li>
+                    </ul>
+                    <p>Excelente para comparar diferentes tipos de agua y identificar patrones hidroquímicos específicos.</p>
+                </div>
+                <div class="diagram-image">
+                    <img src="static/images/schoeller_plot.png" 
+                         alt="Ejemplo de diagrama Schoeller" 
+                         class="plot-image">
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Tips adicionales -->
+    <div class="tips-section">
+        <h3 class="section-title">💡 Consejos para mejores resultados</h3>
+        <div class="tips-grid">
+            <div class="tip-card">
+                <h5>📋 Preparación de datos</h5>
+                <p>Asegúrate de que todas las concentraciones estén en las mismas unidades (mg/L recomendado)</p>
+            </div>
+            <div class="tip-card">
+                <h5>🎯 Selección de diagrama</h5>
+                <p>Usa Piper para clasificación general, Durov para análisis completo, y Schoeller para pocas muestras</p>
+            </div>
+            <div class="tip-card">
+                <h5>🔍 Interpretación</h5>
+                <p>Los diagramas ayudan a identificar tipos de agua, procesos geoquímicos y fuentes de contaminación</p>
+            </div>
+        </div>
+    </div>
 </div>
 
+<style>
+.container {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 20px;
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+}
+
+.instruction-section {
+    margin-bottom: 40px;
+    background: #f8f9fa;
+    padding: 30px;
+    border-radius: 12px;
+    box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+}
+
+.section-title {
+    color: #2c3e50;
+    border-bottom: 3px solid #3498db;
+    padding-bottom: 10px;
+    margin-bottom: 25px;
+    font-size: 1.8em;
+}
+
+.requirements-box {
+    background: #e8f4f8;
+    padding: 20px;
+    border-radius: 8px;
+    border-left: 4px solid #3498db;
+    margin-bottom: 25px;
+}
+
+.requirements-list {
+    margin: 10px 0;
+    padding-left: 20px;
+}
+
+.requirements-list li {
+    margin: 8px 0;
+    line-height: 1.6;
+}
+
+.parameters-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+    gap: 20px;
+    margin-bottom: 25px;
+}
+
+.parameter-card {
+    background: white;
+    padding: 20px;
+    border-radius: 8px;
+    border: 1px solid #ddd;
+    box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+}
+
+.parameter-card h5 {
+    color: #2980b9;
+    margin-bottom: 10px;
+    font-size: 1.2em;
+}
+
+.example-section {
+    background: white;
+    padding: 20px;
+    border-radius: 8px;
+    border: 1px solid #ddd;
+    text-align: center;
+}
+
+.example-image {
+    max-width: 100%;
+    height: auto;
+    border-radius: 8px;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+    margin-top: 15px;
+}
+
+.diagram-card {
+    background: white;
+    margin-bottom: 30px;
+    border-radius: 12px;
+    overflow: hidden;
+    box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+}
+
+.diagram-title {
+    background: linear-gradient(135deg, #3498db, #2980b9);
+    color: white;
+    padding: 20px;
+    margin: 0;
+    font-size: 1.4em;
+}
+
+.diagram-content {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 30px;
+    padding: 25px;
+}
+
+.diagram-description {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+}
+
+.diagram-description ul {
+    margin: 15px 0;
+    padding-left: 20px;
+}
+
+.diagram-description li {
+    margin: 8px 0;
+    line-height: 1.6;
+}
+
+.diagram-image {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.plot-image {
+    max-width: 100%;
+    height: auto;
+    border-radius: 8px;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+}
+
+.tips-section {
+    background: #f1f8ff;
+    padding: 30px;
+    border-radius: 12px;
+    border: 1px solid #b3d9ff;
+}
+
+.tips-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+    gap: 20px;
+    margin-top: 20px;
+}
+
+.tip-card {
+    background: white;
+    padding: 20px;
+    border-radius: 8px;
+    border-left: 4px solid #27ae60;
+    box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+}
+
+.tip-card h5 {
+    color: #27ae60;
+    margin-bottom: 10px;
+    font-size: 1.1em;
+}
+
+/* Responsive design */
+@media (max-width: 768px) {
+    .diagram-content {
+        grid-template-columns: 1fr;
+        gap: 20px;
+    }
+    
+    .parameters-grid {
+        grid-template-columns: 1fr;
+    }
+    
+    .container {
+        padding: 10px;
+    }
+    
+    .instruction-section {
+        padding: 20px;
+    }
+    
+    .section-title {
+        font-size: 1.5em;
+    }
+}
+
+/* Mejoras de accesibilidad */
+.parameter-card:hover, .tip-card:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 15px rgba(0,0,0,0.15);
+    transition: all 0.3s ease;
+}
+
+p {
+    line-height: 1.6;
+    margin-bottom: 15px;
+    text-align: justify;
+}
+
+strong {
+    color: #2c3e50;
+}
+</style>
 {% endblock %}
