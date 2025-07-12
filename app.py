@@ -26,6 +26,22 @@ if not os.path.exists(UPLOAD_FOLDER):
 app.config['UPLOAD_FOLDER'] = UPLOAD_FOLDER
 
 
+def validate_columns(df, required_columns, diagram_name):
+    """
+    Valida que el DataFrame contenga las columnas requeridas para un diagrama específico.
+    
+    Args:
+        df: DataFrame a validar
+        required_columns: Lista de columnas requeridas
+        diagram_name: Nombre del diagrama para el mensaje de error
+        
+    Returns:
+        tuple: (es_valido, columnas_faltantes)
+    """
+    missing_columns = [col for col in required_columns if col not in df.columns]
+    return len(missing_columns) == 0, missing_columns
+
+
 @app.route("/", methods=["GET", "POST"])
 def index():
     if request.method == 'POST':
@@ -46,23 +62,52 @@ def index():
         data_filename = secure_filename(file.filename)
         file_path = os.path.join(app.config['UPLOAD_FOLDER'], data_filename)
         file.save(file_path)
-        #session['uploaded_data_file_path'] = os.path.join(app.config['UPLOAD_FOLDER'], data_filename)
 
         # Detect encoding txt file
         with open(file_path, 'rb') as f:
             result = chardet.detect(f.read())
 
         # Read csv
-        df = pd.read_csv(file_path, encoding=result['encoding'])
+        try:
+            df = pd.read_csv(file_path, encoding=result['encoding'])
+        except Exception as e:
+            flash(f'Error reading file: {str(e)}', 'warning')
+            return redirect("/")
+
+        # Define required columns for each diagram
+        piper_elements = ["Ca", "Mg", "Na", "K", "HCO3", "CO3", "Cl", "SO4"]
+        schoeller_elements = ["Ca", "Mg", "Na", "K", "HCO3", "Cl", "SO4"]
+        durov_elements = ["Ca", "Mg", "Na", "K", "HCO3", "CO3", "Cl", "SO4", "pH", "TDS"]
+        
+        # Validate specific diagram requirements
+        validation_errors = []
+        
+        for diagram in diagrams:
+            if diagram == "Piper":
+                is_valid, missing_cols = validate_columns(df, piper_elements, "Piper")
+                if not is_valid:
+                    validation_errors.append(f'Piper diagram requires missing columns: {", ".join(missing_cols)}')
+            
+            elif diagram == "Durov":
+                is_valid, missing_cols = validate_columns(df, durov_elements, "Durov")
+                if not is_valid:
+                    validation_errors.append(f'Durov diagram requires missing columns: {", ".join(missing_cols)}')
+            
+            elif diagram == 'Schoeller':
+                is_valid, missing_cols = validate_columns(df, schoeller_elements, "Schoeller")
+                if not is_valid:
+                    validation_errors.append(f'Schoeller diagram requires missing columns: {", ".join(missing_cols)}')
+
+        # If there are validation errors, show them and return
+        if validation_errors:
+            for error in validation_errors:
+                flash(error, 'warning')
+            flash('Please ensure your CSV file contains all required columns for the selected diagrams.', 'warning')
+            return redirect("/")
 
         # Format dataframe columns
         form_columns = ['Sample', 'Label', 'Color', 'Marker', 'Size', 'Alpha']
-
-        piper_elements = ["Ca", "Mg", "Na", "K", "HCO3", "CO3", "Cl", "SO4"]
-        schoeller_elements = ["Ca", "Mg", "Na", "K", "HCO3", "Cl", "SO4"]
-        elements = ["Ca", "Mg", "Na", "K", "HCO3", "CO3", "Cl", "SO4",
-                          "pH", "TDS"]
-
+        elements = ["Ca", "Mg", "Na", "K", "HCO3", "CO3", "Cl", "SO4", "pH", "TDS"]
 
         df['Color'] = 'blue'
         df['Marker'] = 'o'
@@ -86,30 +131,52 @@ def index():
         df['Color'] = df['Label'].map(dictionary)
 
         # Plot selected diagrams
+        successful_plots = []
+        
         for diagram in diagrams:
-            if diagram == "Piper":
-                piperdf = df.dropna(subset=piper_elements)
-                piperdf = piperdf.reset_index(drop=True)
-                triangle_piper.plot(piperdf, figname='static/output/trilinear_piper_plot', figformat='png')
-                plt.legend(bbox_to_anchor=(1.15, 1), loc='best', borderaxespad=0.5, fontsize=8)
-                plt.savefig('static/output/trilinear_piper_plot.png', bbox_inches="tight", dpi=300)
+            try:
+                if diagram == "Piper":
+                    piperdf = df.dropna(subset=piper_elements)
+                    if piperdf.empty:
+                        flash(f'No valid data rows for Piper diagram after removing missing values', 'warning')
+                        continue
+                    piperdf = piperdf.reset_index(drop=True)
+                    triangle_piper.plot(piperdf, figname='static/output/trilinear_piper_plot', figformat='png')
+                    plt.legend(bbox_to_anchor=(1.15, 1), loc='best', borderaxespad=0.5, fontsize=8)
+                    plt.savefig('static/output/trilinear_piper_plot.png', bbox_inches="tight", dpi=300)
+                    successful_plots.append(diagram)
 
-            if diagram == "Durov":
-                durovdf = df.dropna(subset=elements)
-                durovdf = durovdf.reset_index(drop=True)
-                durovdf['TDS'] = [4000 if x > 4000 else x for x in durovdf['TDS']]
-                print(durovdf)
-                durvo.plot(durovdf, figname='static/output/durov_plot', figformat='png')
-                plt.legend(bbox_to_anchor=(1.05, 1), loc='best', borderaxespad=0.5, fontsize=10)
-                plt.savefig('static/output/durov_plot.png', bbox_inches="tight", dpi=300)
+                elif diagram == "Durov":
+                    durovdf = df.dropna(subset=durov_elements)
+                    if durovdf.empty:
+                        flash(f'No valid data rows for Durov diagram after removing missing values', 'warning')
+                        continue
+                    durovdf = durovdf.reset_index(drop=True)
+                    durovdf['TDS'] = [4000 if x > 4000 else x for x in durovdf['TDS']]
+                    print(durovdf)
+                    durvo.plot(durovdf, figname='static/output/durov_plot', figformat='png')
+                    plt.legend(bbox_to_anchor=(1.05, 1), loc='best', borderaxespad=0.5, fontsize=10)
+                    plt.savefig('static/output/durov_plot.png', bbox_inches="tight", dpi=300)
+                    successful_plots.append(diagram)
 
+                elif diagram == 'Schoeller':
+                    schoellerdf = df.dropna(subset=schoeller_elements)
+                    if schoellerdf.empty:
+                        flash(f'No valid data rows for Schoeller diagram after removing missing values', 'warning')
+                        continue
+                    schoellerdf = schoellerdf.reset_index(drop=True)
+                    schoeller.plot(schoellerdf, figname='static/output/schoeller_plot', figformat='png')
+                    plt.legend(bbox_to_anchor=(1.05, 1), loc='best', borderaxespad=0.5, fontsize=6)
+                    plt.savefig('static/output/schoeller_plot.png', bbox_inches="tight", dpi=300)
+                    successful_plots.append(diagram)
+                    
+            except Exception as e:
+                flash(f'Error generating {diagram} diagram: {str(e)}', 'error')
 
-            if diagram == 'Schoeller':
-                schoellerdf = df.dropna(subset=schoeller_elements)
-                schoellerdf = schoellerdf.reset_index(drop=True)
-                schoeller.plot(schoellerdf, figname='static/output/schoeller_plot', figformat='png')
-                plt.legend(bbox_to_anchor=(1.05, 1), loc='best', borderaxespad=0.5, fontsize=6)
-                plt.savefig('static/output/schoeller_plot.png', bbox_inches="tight", dpi=300)
+        # Check if any plots were successful
+        if not successful_plots:
+            flash('No diagrams could be generated. Please check your data format.', 'error')
+            return redirect("/")
 
         df.to_csv("static/output/output.csv", index=None)
 
@@ -118,26 +185,28 @@ def index():
         # Dataframe into html table
         table = df[display_columns].to_html(classes='table table-stripped')
 
-        return render_template("plot.html", diagrams = diagrams, table = table, titles=[''])
+        return render_template("plot.html", diagrams=successful_plots, table=table, titles=[''])
 
     return render_template("index.html")
 
 
 def process_data(data, numeric_columns):
-
-    #Replace '<' values by half of value
+    # Replace '<' values by half of value
     for column in numeric_columns:
-        data[column] = data[column].apply(under_detection)
-        #data = data.dropna(subset = column)
+        if column in data.columns:  # Solo procesar si la columna existe
+            data[column] = data[column].apply(under_detection)
 
-    data[numeric_columns] = data[numeric_columns ].apply(pd.to_numeric)
-    data['CO3'] = data['CO3'].fillna(0)
+    # Only convert to numeric columns that exist in the dataframe
+    existing_numeric_columns = [col for col in numeric_columns if col in data.columns]
+    data[existing_numeric_columns] = data[existing_numeric_columns].apply(pd.to_numeric, errors='coerce')
+    
+    if 'CO3' in data.columns:
+        data['CO3'] = data['CO3'].fillna(0)
 
     return data
 
 
 def under_detection(value):
-
     value = str(value)
     if value.startswith('<'):
         return float(value[1:]) / 2
@@ -154,11 +223,9 @@ def output():
 
 
 @app.route("/instructions", methods=["GET"])
-
 def instrucions():
     return render_template("instructions.html")
 
 
-#app.run()
 if __name__ == '__main__':
     app.run(debug=True)
