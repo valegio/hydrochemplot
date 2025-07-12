@@ -1,8 +1,9 @@
-Flask==2.0.2
+Flask>=2.3.3
 wqchartpy==0.1.10
-matplotlib==3.5.3
-pandas==1.4.4
-numpy==1.22.4
-gunicorn==20.1.0
-chardet==4.0.0  
+Werkzeug>=2.3.7
+matplotlib>=3.7.0
+pandas>=2.0.0
+numpy>=1.24.0
+chardet>=5.0.0
+gunicorn>=21.0.0
 openpyxl==3.0.10 
