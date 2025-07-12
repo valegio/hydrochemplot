@@ -1,3 +1,4 @@
+setuptools==68.2.2
 Flask==2.3.3
 wqchartpy==0.1.10
 Werkzeug==2.3.7
