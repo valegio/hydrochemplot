@@ -1,10 +1,4 @@
-services:
-  - type: web
-    name: hydrochemplot
-    plan: free
-    buildCommand: |
-      python -m pip install --upgrade pip
-      pip install setuptools==68.2.2 wheel==0.41.3
-      pip install --no-cache-dir --use-pep517 -r requirements.txt
-      mkdir -p static/output
-    startCommand: gunicorn --workers 1 --threads 2 --timeout 120 app:app
+buildCommand: |
+  python -m pip install --upgrade pip
+  pip install --only-binary :all: --no-cache-dir -r requirements.txt
+  mkdir -p static/output
