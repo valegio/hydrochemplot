@@ -1,6 +1,6 @@
 services:
   - type: web
-    name: hydrochemplot
+    name: app
     plan: free
     env: python
     buildCommand: |
