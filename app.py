@@ -25,6 +25,45 @@ if not os.path.exists(UPLOAD_FOLDER):
     os.makedirs(UPLOAD_FOLDER)
 app.config['UPLOAD_FOLDER'] = UPLOAD_FOLDER
 
+# Extensiones permitidas
+ALLOWED_EXTENSIONS = {'csv', 'xlsx', 'xls'}
+
+
+def allowed_file(filename):
+    """Verifica si el archivo tiene una extensión permitida"""
+    return '.' in filename and \
+           filename.rsplit('.', 1)[1].lower() in ALLOWED_EXTENSIONS
+
+
+def read_file(file_path):
+    """
+    Lee un archivo CSV o Excel y retorna un DataFrame
+    
+    Args:
+        file_path: Ruta al archivo
+        
+    Returns:
+        DataFrame de pandas
+    """
+    file_extension = file_path.rsplit('.', 1)[1].lower()
+    
+    if file_extension == 'csv':
+        # Detectar encoding para CSV
+        with open(file_path, 'rb') as f:
+            result = chardet.detect(f.read())
+        
+        # Leer CSV con encoding detectado
+        df = pd.read_csv(file_path, encoding=result['encoding'])
+        
+    elif file_extension in ['xlsx', 'xls']:
+        # Leer archivo Excel
+        df = pd.read_excel(file_path)
+        
+    else:
+        raise ValueError(f"Formato de archivo no soportado: {file_extension}")
+    
+    return df
+
 
 def validate_columns(df, required_columns, diagram_name):
     """
@@ -52,6 +91,11 @@ def index():
             flash('Please input a file', 'warning')
             return redirect("/")
 
+        # Verificar extensión del archivo
+        if not allowed_file(file.filename):
+            flash('Please upload a CSV or Excel file (.csv, .xlsx, .xls)', 'warning')
+            return redirect("/")
+
         # Check if a checkbox was checked
         diagrams = request.form.getlist('diagram')
         if diagrams == []:
@@ -63,13 +107,9 @@ def index():
         file_path = os.path.join(app.config['UPLOAD_FOLDER'], data_filename)
         file.save(file_path)
 
-        # Detect encoding txt file
-        with open(file_path, 'rb') as f:
-            result = chardet.detect(f.read())
-
-        # Read csv
+        # Read file (CSV or Excel)
         try:
-            df = pd.read_csv(file_path, encoding=result['encoding'])
+            df = read_file(file_path)
         except Exception as e:
             flash(f'Error reading file: {str(e)}', 'warning')
             return redirect("/")
@@ -102,7 +142,7 @@ def index():
         if validation_errors:
             for error in validation_errors:
                 flash(error, 'warning')
-            flash('Please ensure your CSV file contains all required columns for the selected diagrams.', 'warning')
+            flash('Please ensure your file contains all required columns for the selected diagrams.', 'warning')
             return redirect("/")
 
         # Format dataframe columns
