@@ -8,11 +8,3 @@ chardet>=5.0.0
 gunicorn==21.0.0
 openpyxl>=3.1.0
 xlrd>=2.0.0
-
-Flask==2.3.3
-wqchartpy==0.1.10
-Werkzeug==2.3.7
-matplotlib==3.7.0  # Versión mínima compatible
-pandas==2.0.3      # Versión estable más ligera
-numpy==1.24.3      # Compatible con las otras dependencias
-gunicorn==21.0.0
