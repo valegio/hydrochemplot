@@ -1,16 +1,30 @@
 from flask import Flask, request, redirect, render_template, flash
 from wqchartpy import triangle_piper, durvo, schoeller
 from werkzeug.utils import secure_filename
+import gc
+import matplotlib
+matplotlib.use('Agg')
 import matplotlib.pyplot as plt
 import pandas as pd
 import numpy as np
-import matplotlib
+
 import chardet
 import os
 
+# Configuración de matplotlib para mínimo uso de memoria
+plt.rcParams.update({
+    'figure.max_open_warning': 0,
+    'figure.dpi': 80,
+    'savefig.dpi': 80,
+    'savefig.optimize': True,
+    'path.simplify': True,
+    'path.simplify_threshold': 0.1,
+    'agg.path.chunksize': 10000  # Para manejar grandes conjuntos de datos
+})
+
 plt.switch_backend('Agg')  # Backend no interactivo
 matplotlib.rcParams['figure.max_open_warning'] = 0
-matplotlib.use('Agg')
+
 
 app = Flask(__name__)
 
