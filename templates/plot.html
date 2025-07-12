@@ -1,49 +1,720 @@
 {% extends "layout.html" %}
-
 {% block title %}
-
-Diagrams Plot
-
+Resultados - Diagramas Geoquímicos
 {% endblock %}
-
-
 {% block main %}
+<div class="results-container">
+    <!-- Header Section -->
+    <div class="results-header">
+        <h1 class="page-title">
+            <span class="icon">📊</span>
+            Resultados del Análisis Geoquímico
+        </h1>
+        <p class="results-subtitle">Diagramas generados exitosamente</p>
+        
+        <!-- Action Bar -->
+        <div class="action-bar">
+            <button class="action-btn" onclick="window.print()">
+                <span class="btn-icon">🖨️</span>
+                Imprimir
+            </button>
+            <button class="action-btn" onclick="downloadAll()">
+                <span class="btn-icon">📥</span>
+                Descargar Todo
+            </button>
+            <a href="/" class="action-btn primary">
+                <span class="btn-icon">🔄</span>
+                Nuevo Análisis
+            </a>
+        </div>
+    </div>
 
-{% for diagram in diagrams %}
+    <!-- Diagrams Section -->
+    <div class="diagrams-section">
+        {% for diagram in diagrams %}
+        {% if diagram == 'Piper' %}
+        <div class="diagram-card" id="piper-diagram">
+            <div class="diagram-header">
+                <h2 class="diagram-title">
+                    <span class="diagram-icon">📊</span>
+                    Diagrama Trilinear Piper
+                </h2>
+                <div class="diagram-actions">
+                    <button class="mini-btn" onclick="toggleFullscreen('piper-img')" title="Pantalla completa">
+                        <span>🔍</span>
+                    </button>
+                    <button class="mini-btn" onclick="downloadImage('static/output/trilinear_piper_plot.png', 'trilinear_piper_plot.png')" title="Descargar">
+                        <span>💾</span>
+                    </button>
+                </div>
+            </div>
+            <div class="diagram-content">
+                <div class="image-container">
+                    <img id="piper-img" src="static/output/trilinear_piper_plot.png" 
+                         alt="Diagrama Trilinear Piper" class="diagram-image">
+                </div>
+                <div class="diagram-info">
+                    <h4>Interpretación:</h4>
+                    <p>El diagrama Piper muestra la clasificación hidroquímica de las muestras basada en la proporción de cationes y aniones mayores La posición en el diamante central indica el tipo de agua predominante.</p>
+                </div>
+            </div>
+        </div>
+        {% endif %}
 
-{% if diagram == 'Piper' %}
-<div>
-<h1> Trilinear Piper diagram </h1>
-<img src="static/output/trilinear_piper_plot.png" style='height: 80%; width: 80%; object-fit: contain'>
-<br>
-<br>
-<br>
-{% endif %}
+        {% if diagram == 'Durov' %}
+        <div class="diagram-card" id="durov-diagram">
+            <div class="diagram-header">
+                <h2 class="diagram-title">
+                    <span class="diagram-icon">📈</span>
+                    Diagrama Durov
+                </h2>
+                <div class="diagram-actions">
+                    <button class="mini-btn" onclick="toggleFullscreen('durov-img')" title="Pantalla completa">
+                        <span>🔍</span>
+                    </button>
+                    <button class="mini-btn" onclick="downloadImage('static/output/durov_plot.png', 'durov_plot.png')" title="Descargar">
+                        <span>💾</span>
+                    </button>
+                </div>
+            </div>
+            <div class="diagram-content">
+                <div class="image-container">
+                    <img id="durov-img" src="static/output/durov_plot.png" 
+                         alt="Diagrama Durov" class="diagram-image">
+                </div>
+                <div class="diagram-info">
+                    <h4>Interpretación:</h4>
+                    <p>El diagrama Durov combina la clasificación iónica con parámetros adicionales como pH y TDS, proporcionando una visión más amplia de la calidad del agua.</p>
+                </div>
+            </div>
+        </div>
+        {% endif %}
+
+        {% if diagram == 'Schoeller' %}
+        <div class="diagram-card" id="schoeller-diagram">
+            <div class="diagram-header">
+                <h2 class="diagram-title">
+                    <span class="diagram-icon">📉</span>
+                    Diagrama Schoeller
+                </h2>
+                <div class="diagram-actions">
+                    <button class="mini-btn" onclick="toggleFullscreen('schoeller-img')" title="Pantalla completa">
+                        <span>🔍</span>
+                    </button>
+                    <button class="mini-btn" onclick="downloadImage('static/output/schoeller_plot.png', 'schoeller_plot.png')" title="Descargar">
+                        <span>💾</span>
+                    </button>
+                </div>
+            </div>
+            <div class="diagram-content">
+                <div class="image-container">
+                    <img id="schoeller-img" src="static/output/schoeller_plot.png" 
+                         alt="Diagrama Schoeller" class="diagram-image">
+                </div>
+                <div class="diagram-info">
+                    <h4>Interpretación:</h4>
+                    <p>El diagrama Schoeller representa las concentraciones reales de iones en escala semi-logarítmica, facilitando la comparación directa entre diferentes muestras y la identificación de patrones hidroquímicos.</p>
+                </div>
+            </div>
+        </div>
+        {% endif %}
+        {% endfor %}
+    </div>
+
+    <!-- Data Table Section -->
+    <div class="data-section">
+        <div class="data-header">
+            <h2 class="section-title">
+                <span class="icon">📋</span>
+                Datos del Análisis
+            </h2>
+            <div class="data-actions">
+                <button class="mini-btn" onclick="toggleTableView()" title="Alternar vista">
+                    <span id="table-toggle-icon">📊</span>
+                </button>
+                <button class="mini-btn" onclick="exportTable()" title="Exportar CSV">
+                    <span>📤</span>
+                </button>
+            </div>
+        </div>
+        
+        <div class="table-container" id="table-container">
+            <div class="table-wrapper">
+                {{ table|safe }}
+            </div>
+        </div>
+    </div>
+
+    <!-- Summary Section -->
+    <div class="summary-section">
+        <h3 class="summary-title">
+            <span class="icon">📈</span>
+            Resumen del Análisis
+        </h3>
+        <div class="summary-grid">
+            <div class="summary-card">
+                <h4>Diagramas Generados</h4>
+                <p class="summary-value">{{ diagrams|length }}</p>
+            </div>
+            <div class="summary-card">
+                <h4>Muestras Analizadas</h4>
+                <p class="summary-value" id="sample-count">-</p>
+            </div>
+            <div class="summary-card">
+                <h4>Fecha de Análisis</h4>
+                <p class="summary-value" id="analysis-date">-</p>
+            </div>
+        </div>
+    </div>
 </div>
-{% if diagram == 'Durov' %}
-<div>
-<h1> Durov diagram</h1>
-<img src="static/output/durov_plot.png" style='height: 80%; width: 80%; object-fit: contain'>
-<br>
-<br>
-<br>
-{% endif %}
+
+<!-- Fullscreen Modal -->
+<div id="fullscreen-modal" class="modal">
+    <div class="modal-content">
+        <button class="close-btn" onclick="closeFullscreen()">&times;</button>
+        <img id="fullscreen-img" src="" alt="Imagen en pantalla completa">
+    </div>
 </div>
-{% if diagram == 'Schoeller' %}
-<div>
-<h1> Schoeller diagram </h1>
-<img src="static/output/schoeller_plot.png" style='height: 80%; width: 80%; object-fit: contain'>
-<br>
-<br>
-<br>
-{% endif %}
-</div >
-{% endfor %}
-<div style="text-align:center">
-<h1> Data </h1>
-</div>
-{{ table|safe }}
 
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    // Initialize page
+    updateSampleCount();
+    updateAnalysisDate();
+    styleDataTable();
+});
 
+// Sample count from table
+function updateSampleCount() {
+    const table = document.querySelector('table');
+    if (table) {
+        const rows = table.querySelectorAll('tbody tr');
+        document.getElementById('sample-count').textContent = rows.length;
+    }
+}
 
+// Current date
+function updateAnalysisDate() {
+    const now = new Date();
+    const dateStr = now.toLocaleDateString('es-ES', { 
+        year: 'numeric', 
+        month: 'long', 
+        day: 'numeric' 
+    });
+    document.getElementById('analysis-date').textContent = dateStr;
+}
+
+// Style the data table
+function styleDataTable() {
+    const table = document.querySelector('table');
+    if (table) {
+        table.classList.add('styled-table');
+        
+        // Add zebra striping
+        const rows = table.querySelectorAll('tbody tr');
+        rows.forEach((row, index) => {
+            if (index % 2 === 0) {
+                row.classList.add('even-row');
+            }
+        });
+    }
+}
+
+// Fullscreen functionality
+function toggleFullscreen(imgId) {
+    const img = document.getElementById(imgId);
+    const modal = document.getElementById('fullscreen-modal');
+    const fullscreenImg = document.getElementById('fullscreen-img');
+    
+    fullscreenImg.src = img.src;
+    modal.style.display = 'block';
+    document.body.style.overflow = 'hidden';
+}
+
+function closeFullscreen() {
+    const modal = document.getElementById('fullscreen-modal');
+    modal.style.display = 'none';
+    document.body.style.overflow = 'auto';
+}
+
+// Download functionality
+function downloadImage(src, filename) {
+    const link = document.createElement('a');
+    link.href = src;
+    link.download = filename;
+    link.click();
+}
+
+function downloadAll() {
+    const images = document.querySelectorAll('.diagram-image');
+    images.forEach((img, index) => {
+        setTimeout(() => {
+            const filename = img.src.split('/').pop();
+            downloadImage(img.src, filename);
+        }, index * 500);
+    });
+}
+
+// Table view toggle
+let tableExpanded = false;
+function toggleTableView() {
+    const container = document.getElementById('table-container');
+    const icon = document.getElementById('table-toggle-icon');
+    
+    if (tableExpanded) {
+        container.classList.remove('expanded');
+        icon.textContent = '📊';
+        tableExpanded = false;
+    } else {
+        container.classList.add('expanded');
+        icon.textContent = '📋';
+        tableExpanded = true;
+    }
+}
+
+// Export table to CSV
+function exportTable() {
+    const table = document.querySelector('table');
+    if (!table) return;
+    
+    let csv = '';
+    const rows = table.querySelectorAll('tr');
+    
+    rows.forEach(row => {
+        const cells = row.querySelectorAll('td, th');
+        const rowData = Array.from(cells).map(cell => 
+            '"' + cell.textContent.replace(/"/g, '""') + '"'
+        ).join(',');
+        csv += rowData + '\n';
+    });
+    
+    const blob = new Blob([csv], { type: 'text/csv' });
+    const url = window.URL.createObjectURL(blob);
+    const link = document.createElement('a');
+    link.href = url;
+    link.download = 'analisis_geoquimico.csv';
+    link.click();
+    window.URL.revokeObjectURL(url);
+}
+
+// Print functionality
+window.addEventListener('beforeprint', function() {
+    document.body.classList.add('print-mode');
+});
+
+window.addEventListener('afterprint', function() {
+    document.body.classList.remove('print-mode');
+});
+
+// Close modal on outside click
+window.onclick = function(event) {
+    const modal = document.getElementById('fullscreen-modal');
+    if (event.target === modal) {
+        closeFullscreen();
+    }
+}
+
+// Keyboard shortcuts
+document.addEventListener('keydown', function(e) {
+    if (e.key === 'Escape') {
+        closeFullscreen();
+    }
+});
+</script>
+
+<style>
+.results-container {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 20px;
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+}
+
+.results-header {
+    text-align: center;
+    margin-bottom: 40px;
+    padding: 30px 0;
+    background: linear-gradient(135deg, #f8f9fa, #e9ecef);
+    border-radius: 16px;
+    border: 1px solid #dee2e6;
+}
+
+.page-title {
+    font-size: 2.5em;
+    color: #2c3e50;
+    margin-bottom: 10px;
+    font-weight: 700;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 15px;
+}
+
+.results-subtitle {
+    font-size: 1.2em;
+    color: #7f8c8d;
+    margin-bottom: 25px;
+}
+
+.action-bar {
+    display: flex;
+    justify-content: center;
+    gap: 15px;
+    flex-wrap: wrap;
+}
+
+.action-btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    padding: 12px 24px;
+    border: 2px solid #3498db;
+    background: white;
+    color: #3498db;
+    text-decoration: none;
+    border-radius: 8px;
+    font-weight: 600;
+    transition: all 0.3s ease;
+    cursor: pointer;
+}
+
+.action-btn:hover {
+    background: #3498db;
+    color: white;
+    transform: translateY(-2px);
+    box-shadow: 0 5px 15px rgba(52, 152, 219, 0.3);
+}
+
+.action-btn.primary {
+    background: #3498db;
+    color: white;
+}
+
+.action-btn.primary:hover {
+    background: #2980b9;
+}
+
+.diagrams-section {
+    margin-bottom: 50px;
+}
+
+.diagram-card {
+    background: white;
+    border-radius: 16px;
+    padding: 30px;
+    margin-bottom: 40px;
+    box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+    border: 1px solid #e9ecef;
+}
+
+.diagram-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 25px;
+    padding-bottom: 15px;
+    border-bottom: 2px solid #f8f9fa;
+}
+
+.diagram-title {
+    font-size: 1.5em;
+    color: #2c3e50;
+    margin: 0;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.diagram-icon {
+    font-size: 1.2em;
+}
+
+.diagram-actions {
+    display: flex;
+    gap: 10px;
+}
+
+.mini-btn {
+    background: #f8f9fa;
+    border: 1px solid #dee2e6;
+    padding: 8px 12px;
+    border-radius: 6px;
+    cursor: pointer;
+    transition: all 0.3s ease;
+}
+
+.mini-btn:hover {
+    background: #e9ecef;
+    transform: translateY(-1px);
+}
+
+.diagram-content {
+    display: grid;
+    grid-template-columns: 2fr 1fr;
+    gap: 30px;
+    align-items: start;
+}
+
+.image-container {
+    text-align: center;
+}
+
+.diagram-image {
+    max-width: 100%;
+    height: auto;
+    border-radius: 12px;
+    box-shadow: 0 5px 20px rgba(0,0,0,0.1);
+    cursor: pointer;
+    transition: transform 0.3s ease;
+}
+
+.diagram-image:hover {
+    transform: scale(1.02);
+}
+
+.diagram-info {
+    background: #f8f9fa;
+    padding: 20px;
+    border-radius: 12px;
+    border-left: 4px solid #3498db;
+}
+
+.diagram-info h4 {
+    color: #2c3e50;
+    margin-bottom: 15px;
+    font-size: 1.1em;
+}
+
+.diagram-info p {
+    color: #7f8c8d;
+    line-height: 1.6;
+    margin: 0;
+}
+
+.data-section {
+    background: white;
+    border-radius: 16px;
+    padding: 30px;
+    margin-bottom: 40px;
+    box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+    border: 1px solid #e9ecef;
+}
+
+.data-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 25px;
+    padding-bottom: 15px;
+    border-bottom: 2px solid #f8f9fa;
+}
+
+.section-title {
+    font-size: 1.5em;
+    color: #2c3e50;
+    margin: 0;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.data-actions {
+    display: flex;
+    gap: 10px;
+}
+
+.table-container {
+    overflow-x: auto;
+    border-radius: 8px;
+    border: 1px solid #dee2e6;
+}
+
+.table-container.expanded {
+    max-height: none;
+}
+
+.table-wrapper {
+    min-width: 100%;
+}
+
+.styled-table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 0.9em;
+}
+
+.styled-table th {
+    background: #3498db;
+    color: white;
+    padding: 12px;
+    text-align: left;
+    font-weight: 600;
+}
+
+.styled-table td {
+    padding: 12px;
+    border-bottom: 1px solid #dee2e6;
+}
+
+.styled-table .even-row {
+    background: #f8f9fa;
+}
+
+.styled-table tr:hover {
+    background: #e8f4f8;
+}
+
+.summary-section {
+    background: white;
+    border-radius: 16px;
+    padding: 30px;
+    box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+    border: 1px solid #e9ecef;
+}
+
+.summary-title {
+    font-size: 1.5em;
+    color: #2c3e50;
+    margin-bottom: 25px;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.summary-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    gap: 20px;
+}
+
+.summary-card {
+    background: #f8f9fa;
+    padding: 20px;
+    border-radius: 12px;
+    text-align: center;
+    border: 1px solid #dee2e6;
+}
+
+.summary-card h4 {
+    color: #7f8c8d;
+    margin-bottom: 10px;
+    font-size: 0.9em;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+}
+
+.summary-value {
+    font-size: 2em;
+    font-weight: 700;
+    color: #3498db;
+    margin: 0;
+}
+
+/* Fullscreen Modal */
+.modal {
+    display: none;
+    position: fixed;
+    z-index: 1000;
+    left: 0;
+    top: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0,0,0,0.9);
+}
+
+.modal-content {
+    position: relative;
+    margin: auto;
+    padding: 20px;
+    width: 90%;
+    height: 90%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.close-btn {
+    position: absolute;
+    top: 15px;
+    right: 35px;
+    color: #f1f1f1;
+    font-size: 40px;
+    font-weight: bold;
+    cursor: pointer;
+    background: none;
+    border: none;
+    z-index: 1001;
+}
+
+.close-btn:hover {
+    color: #bbb;
+}
+
+#fullscreen-img {
+    max-width: 100%;
+    max-height: 100%;
+    object-fit: contain;
+    border-radius: 8px;
+}
+
+/* Print Styles */
+@media print {
+    .action-bar, .diagram-actions, .data-actions {
+        display: none !important;
+    }
+    
+    .diagram-card {
+        break-inside: avoid;
+        page-break-inside: avoid;
+    }
+    
+    .diagram-image {
+        max-width: 100% !important;
+    }
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+    .results-container {
+        padding: 15px;
+    }
+    
+    .diagram-content {
+        grid-template-columns: 1fr;
+        gap: 20px;
+    }
+    
+    .page-title {
+        font-size: 2em;
+        flex-direction: column;
+        gap: 10px;
+    }
+    
+    .action-bar {
+        flex-direction: column;
+        align-items: center;
+    }
+    
+    .action-btn {
+        width: 200px;
+        justify-content: center;
+    }
+    
+    .diagram-card, .data-section, .summary-section {
+        padding: 20px;
+    }
+    
+    .summary-grid {
+        grid-template-columns: 1fr;
+    }
+}
+
+.icon {
+    font-size: 1.2em;
+}
+
+.btn-icon {
+    font-size: 1.1em;
+}
+</style>
 {% endblock %}
