@@ -11,20 +11,8 @@ import numpy as np
 import chardet
 import os
 
-# Configuración de matplotlib para mínimo uso de memoria
-plt.rcParams.update({
-    'figure.max_open_warning': 0,
-    'figure.dpi': 80,
-    'savefig.dpi': 80,
-    'savefig.optimize': True,
-    'path.simplify': True,
-    'path.simplify_threshold': 0.1,
-    'agg.path.chunksize': 10000  # Para manejar grandes conjuntos de datos
-})
-
 plt.switch_backend('Agg')  # Backend no interactivo
 matplotlib.rcParams['figure.max_open_warning'] = 0
-
 
 app = Flask(__name__)
 
