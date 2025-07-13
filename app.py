@@ -5,6 +5,7 @@ import gc
 import matplotlib
 matplotlib.use('Agg')
 import matplotlib.pyplot as plt
+from matplotlib import colors as mcolors
 import pandas as pd
 import numpy as np
 
