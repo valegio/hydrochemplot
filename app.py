@@ -6,6 +6,7 @@ import matplotlib
 matplotlib.use('Agg')
 import matplotlib.pyplot as plt
 from matplotlib import colors as mcolors
+from matplotlib.colors import ListedColormap
 import pandas as pd
 import numpy as np
 
@@ -158,13 +159,31 @@ def index():
         # Format dataframe columns
         form_columns = ['Sample', 'Label', 'Color', 'Marker', 'Size', 'Alpha']
         elements = ["Ca", "Mg", "Na", "K", "HCO3", "CO3", "Cl", "SO4", "pH", "TDS"]
+
+        # Obtener los colormaps por separado
+        tab20 = plt.get_cmap('tab20').colors
+        tab20b = plt.get_cmap('tab20b').colors
+        tab20c = plt.get_cmap('tab20c').colors
+        
+        # Combinarlos en una sola lista de colores
+        combined_colors = np.vstack([tab20, tab20b, tab20c])
+        
+        # Crear un nuevo colormap
+        extended_tab20 = ListedColormap(combined_colors, name='ExtendedTab20')
         
         # Verificar si el archivo trae columna 'Color'
         if 'Color' not in df.columns:
             # Asignar colores automáticamente basados en las etiquetas
             label_list = df['Label'].unique()
-            cmap = plt.get_cmap('viridis')
-            colors = [matplotlib.colors.to_hex(cmap(i)) for i in np.linspace(0, 1, len(label_list))]
+            n_colors_needed = len(label_list)
+            
+            if n_colors_needed <= 60:
+                colors = [extended_tab20(i) for i in np.linspace(0, 1, n_colors_needed)]
+            else:
+                # Si necesitas más de 60 colores, usa otro colormap (ej. 'gist_rainbow')
+                cmap = plt.get_cmap('gist_rainbow')
+                colors = [cmap(i) for i in np.linspace(0, 1, n_colors_needed)]
+            
             df['Color'] = df['Label'].map(dict(zip(label_list, colors)))
         else:
             invalid_colors = ~df['Color'].apply(lambda c: pd.isna(c) or mcolors.is_color_like(c))
