@@ -167,9 +167,9 @@ def index():
             df['Color'] = df['Label'].map(dict(zip(label_list, colors)))
         else:
             invalid_colors = ~df['Color'].apply(lambda c: pd.isna(c) or mcolors.is_color_like(c))
-        if invalid_colors.any():
-            flash('Error en colores: algunos valores no son válidos (use nombres CSS, hex #RRGGBB o rgb(R,G,B))', 'warning')
-            return redirect("/") 
+            if invalid_colors.any():
+                flash('Error en colores: algunos valores no son válidos (use nombres CSS, hex #RRGGBB o rgb(R,G,B))', 'warning')
+                return redirect("/") 
             
         
         # Asignar valores fijos para las columnas que siempre se generan
