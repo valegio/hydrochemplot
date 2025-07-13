@@ -157,27 +157,23 @@ def index():
         # Format dataframe columns
         form_columns = ['Sample', 'Label', 'Color', 'Marker', 'Size', 'Alpha']
         elements = ["Ca", "Mg", "Na", "K", "HCO3", "CO3", "Cl", "SO4", "pH", "TDS"]
-
-        df['Color'] = 'blue'
-        df['Marker'] = 'o'
-        df['Size'] = 60
-        df['Alpha'] = 0.6
-
-        # Process data
+        
+        # Verificar si el archivo trae columna 'Color'
+        if 'Color' not in df.columns:
+            # Asignar colores automáticamente basados en las etiquetas
+            label_list = df['Label'].unique()
+            cmap = plt.get_cmap('viridis')
+            colors = [matplotlib.colors.to_hex(cmap(i)) for i in np.linspace(0, 1, len(label_list))]
+            df['Color'] = df['Label'].map(dict(zip(label_list, colors)))
+        
+        # Asignar valores fijos para las columnas que siempre se generan
+        df['Marker'] = 'o'    
+        df['Size'] = 60       
+        df['Alpha'] = 0.6      
+        
+        # Procesar datos y seleccionar columnas
         df = process_data(df, elements)
-
-        # Format dataframe for Wqchartpy
-        form_columns.extend(elements)
-        columns = form_columns
-        df = df[columns]
-
-        # Relate label to a color
-        label_list = df['Label'].unique()
-        cmap = plt.get_cmap('rainbow')
-        colors = [matplotlib.colors.to_hex(cmap(i)) for i in np.linspace(0, 1, len(label_list))]
-        dictionary = dict(zip(label_list, colors))
-
-        df['Color'] = df['Label'].map(dictionary)
+        df = df[form_columns + elements]
 
         # Plot selected diagrams
         successful_plots = []
