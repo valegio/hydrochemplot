@@ -97,18 +97,18 @@ def index():
         # Check file uploaded
         file = request.files.get('file')
         if not file:
-            flash('Please input a file', 'warning')
+            flash('Suba un archivo CSV o Excel (.csv, .xlsx, .xls)', 'warning')
             return redirect("/")
 
         # Verificar extensión del archivo
         if not allowed_file(file.filename):
-            flash('Please upload a CSV or Excel file (.csv, .xlsx, .xls)', 'warning')
+            flash('Suba un archivo CSV o Excel (.csv, .xlsx, .xls)', 'warning')
             return redirect("/")
 
         # Check if a checkbox was checked
         diagrams = request.form.getlist('diagram')
         if diagrams == []:
-            flash('Please select a diagram to plot', 'warning')
+            flash('Seleccione un diagrama para graficar', 'warning')
             return redirect("/")
 
         # Save file
@@ -120,7 +120,7 @@ def index():
         try:
             df = read_file(file_path)
         except Exception as e:
-            flash(f'Error reading file: {str(e)}', 'warning')
+            flash(f'Error al leer el archivo: {str(e)}', 'warning')
             return redirect("/")
 
         # Define required columns for each diagram
@@ -151,7 +151,7 @@ def index():
         if validation_errors:
             for error in validation_errors:
                 flash(error, 'warning')
-            flash('Please ensure your file contains all required columns for the selected diagrams.', 'warning')
+            flash('Verifique que el archivo tenga todas las columnas necesarias para los diagramas elegidos.', 'warning')
             return redirect("/")
 
         # Format dataframe columns
@@ -165,6 +165,12 @@ def index():
             cmap = plt.get_cmap('viridis')
             colors = [matplotlib.colors.to_hex(cmap(i)) for i in np.linspace(0, 1, len(label_list))]
             df['Color'] = df['Label'].map(dict(zip(label_list, colors)))
+        else:
+        invalid_colors = ~df['Color'].apply(lambda c: pd.isna(c) or mcolors.is_color_like(c))
+        if invalid_colors.any():
+            flash('Error en colores: algunos valores no son válidos (use nombres CSS, hex #RRGGBB o rgb(R,G,B))', 'warning')
+            return redirect("/") 
+            
         
         # Asignar valores fijos para las columnas que siempre se generan
         df['Marker'] = 'o'    
@@ -183,7 +189,7 @@ def index():
                 if diagram == "Piper":
                     piperdf = df.dropna(subset=piper_elements)
                     if piperdf.empty:
-                        flash(f'No valid data rows for Piper diagram after removing missing values', 'warning')
+                        flash(f'No se encontraron datos válidos para el diagrama Piper tras filtrar valores nulos', 'warning')
                         continue
                     fig = plt.figure(figsize=(10, 8))  # Crea una figura explícita
                     piperdf = piperdf.reset_index(drop=True)
@@ -196,7 +202,7 @@ def index():
                 elif diagram == "Durov":
                     durovdf = df.dropna(subset=durov_elements)
                     if durovdf.empty:
-                        flash(f'No valid data rows for Durov diagram after removing missing values', 'warning')
+                        flash(f'No se encontraron datos válidos para el diagrama Durov tras filtrar valores nulos', 'warning')
                         continue
                     fig = plt.figure(figsize=(10, 8))  # Crea una figura explícita    
                     durovdf = durovdf.reset_index(drop=True)
@@ -211,7 +217,7 @@ def index():
                 elif diagram == 'Schoeller':
                     schoellerdf = df.dropna(subset=schoeller_elements)
                     if schoellerdf.empty:
-                        flash(f'No valid data rows for Schoeller diagram after removing missing values', 'warning')
+                        flash(f'No se encontraron datos válidos para el diagrama Schoeller tras filtrar valores nulos', 'warning')
                         continue
                     fig = plt.figure(figsize=(10, 8))  # Crea una figura explícita
                     schoellerdf = schoellerdf.reset_index(drop=True)
@@ -222,11 +228,11 @@ def index():
                     successful_plots.append(diagram)
                     
             except Exception as e:
-                flash(f'Error generating {diagram} diagram: {str(e)}', 'error')
+                flash(f'Error creando el diagrama {diagram}: {str(e)}', 'error')
 
         # Check if any plots were successful
         if not successful_plots:
-            flash('No diagrams could be generated. Please check your data format.', 'error')
+            flash('No se pudieron generar los diagramas. Por favor verifique el formato de sus datos.', 'error')
             return redirect("/")
 
         df.to_csv("static/output/output.csv", index=None)
