@@ -42,7 +42,150 @@ Instrucciones
         </div>
         
     </div>
-
+	<!-- Sección de ejemplo de datos -->
+	<div class="instruction-section">
+		<h3 class="section-title">📄 Ejemplo de Formato de Datos</h3>
+		
+		<div class="example-intro">
+			<p>A continuación se muestra un ejemplo de cómo deben estructurarse los datos en tu archivo CSV, XLSX o XLS:</p>
+		</div>
+		
+		<div class="example-container">
+			<div class="example-table-wrapper">
+				<table class="example-table">
+					<thead>
+						<tr>
+							<th>Sample</th>
+							<th>Label</th>
+							<th>Ca</th>
+							<th>Mg</th>
+							<th>Na</th>
+							<th>K</th>
+							<th>Li</th>
+							<th>CO3</th>
+							<th>HCO3</th>
+							<th>SO4</th>
+							<th>Cl</th>
+							<th>NO3</th>
+							<th>F</th>
+							<th>TDS</th>
+							<th>pH</th>
+							<th>FUENTE DE LA INFORMACIÓN</th>
+						</tr>
+					</thead>
+					<tbody>
+						<tr>
+							<td>SNGM-CPO-001</td>
+							<td>CPO-CE-058</td>
+							<td>260</td>
+							<td>110</td>
+							<td>360</td>
+							<td>7.1</td>
+							<td>0.46</td>
+							<td>-</td>
+							<td>361</td>
+							<td>1,184</td>
+							<td>193</td>
+							<td>8.4</td>
+							<td>0.38</td>
+							<td>2,428.98</td>
+							<td>7.45</td>
+							<td>Troncoso et al. (2012)</td>
+						</tr>
+						<tr>
+							<td>SNGM-CPO-002</td>
+							<td>CPO-CE-015</td>
+							<td>260</td>
+							<td>72.5</td>
+							<td>187.5</td>
+							<td>5</td>
+							<td>0.28</td>
+							<td>-</td>
+							<td>322</td>
+							<td>834</td>
+							<td>159</td>
+							<td>27.7</td>
+							<td>0.42</td>
+							<td>1,828.64</td>
+							<td>7.24</td>
+							<td>Troncoso et al. (2012)</td>
+						</tr>
+						<tr>
+							<td>SNGM-CPO-007</td>
+							<td>CPO-CE-007A</td>
+							<td>167.5</td>
+							<td>36.25</td>
+							<td>77.5</td>
+							<td>2.9</td>
+							<td>0.23</td>
+							<td>-</td>
+							<td>221</td>
+							<td>407</td>
+							<td>65</td>
+							<td>17.5</td>
+							<td>0.56</td>
+							<td>933.27</td>
+							<td>-</td>
+							<td>Troncoso et al. (2012)</td>
+						</tr>
+						<tr>
+							<td>SNGM-CPO-007</td>
+							<td>CPO-RT-027</td>
+							<td>140</td>
+							<td>35.5</td>
+							<td>97.5</td>
+							<td>2.9</td>
+							<td>0.22</td>
+							<td>-</td>
+							<td>214</td>
+							<td>415</td>
+							<td>68</td>
+							<td>20.1</td>
+							<td>0.59</td>
+							<td>934.06</td>
+							<td>7.37</td>
+							<td>Troncoso et al. (2012)</td>
+						</tr>
+						<tr>
+							<td>SNGM-CPO-024</td>
+							<td>CPO-PF-065</td>
+							<td>180</td>
+							<td>38.75</td>
+							<td>77.5</td>
+							<td>2.7</td>
+							<td>0.3</td>
+							<td>-</td>
+							<td>215</td>
+							<td>436</td>
+							<td>90</td>
+							<td>22.9</td>
+							<td>0.57</td>
+							<td>1,007.61</td>
+							<td>7.29</td>
+							<td>Troncoso et al. (2012)</td>
+						</tr>
+					</tbody>
+				</table>
+			</div>
+			
+			<div class="example-notes">
+				<h4>Notas importantes sobre el formato:</h4>
+				<ul>
+					<li><strong>Columnas obligatorias:</strong> 'Sample' y 'Label' deben estar presentes</li>
+					<li><strong>Valores faltantes:</strong> Usar '-' o dejar en blanco</li>
+					<li><strong>Valores bajo límite de detección:</strong> Usar '&lt;valor' (ej: '&lt;0.5') y será reemplazado por la mitad del valor (0.25 en este caso)</li>
+					<li><strong>Separador decimal:</strong> Usar punto (.) como separador decimal</li>
+					<li><strong>Unidades:</strong> Las concentraciones deben estar en mg/L</li>
+					<li><strong>Encabezados:</strong> Los nombres de columnas deben coincidir exactamente</li>
+					<li><strong>Columnas adicionales:</strong> Pueden haber columnas que no son necesarias para el cálculo</li>
+				</ul>
+			</div>
+			<div class="compact-source">
+				<h4>Fuente:</h4>
+				<p>Datos adaptados de: Espinoza C., M. C. et al. (2021). <em>Base de Datos de hidrogeología de la cuenca del río Copiapó</em>. SERNAGEOMIN. <a href="https://repositorio.sernageomin.cl/handle/0104/24614" target="_blank">Ver fuente original</a></p>
+			</div>
+		</div>
+	</div>
     <!-- Sección de diagramas -->
     <div class="instruction-section">
         <h3 class="section-title">📊 Tipos de Diagramas Disponibles</h3>
@@ -207,6 +350,78 @@ Instrucciones
     box-shadow: 0 2px 8px rgba(0,0,0,0.1);
     margin-top: 15px;
 }
+.example-intro {
+	margin-bottom: 20px;
+	padding: 15px;
+	background: #f0f7ff;
+	border-radius: 8px;
+	border-left: 4px solid #3498db;
+}
+
+.example-container {
+	display: grid;
+	grid-template-columns: 2fr 1fr;
+	gap: 30px;
+}
+
+.example-table-wrapper {
+	overflow-x: auto;
+	background: white;
+	border-radius: 8px;
+	box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+}
+
+.example-table {
+	width: 100%;
+	border-collapse: collapse;
+	font-size: 0.9em;
+	min-width: 800px;
+}
+
+.example-table th {
+	background: #3498db;
+	color: white;
+	padding: 12px 8px;
+	text-align: left;
+	position: sticky;
+	top: 0;
+}
+
+.example-table td {
+	padding: 10px 8px;
+	border-bottom: 1px solid #e0e0e0;
+}
+
+.example-table tr:nth-child(even) {
+	background-color: #f8f9fa;
+}
+
+.example-table tr:hover {
+	background-color: #e8f4fc;
+}
+
+.example-notes {
+	background: #fff8e1;
+	padding: 20px;
+	border-radius: 8px;
+	border-left: 4px solid #ffc107;
+	align-self: start;
+}
+
+.example-notes h4 {
+	color: #ff8f00;
+	margin-top: 0;
+	margin-bottom: 15px;
+}
+
+.example-notes ul {
+	padding-left: 20px;
+}
+
+.example-notes li {
+	margin-bottom: 10px;
+	line-height: 1.5;
+}
 
 .diagram-card {
     background: white;
@@ -311,6 +526,7 @@ Instrucciones
         font-size: 1.5em;
     }
 }
+
 
 /* Mejoras de accesibilidad */
 .parameter-card:hover, .tip-card:hover {
