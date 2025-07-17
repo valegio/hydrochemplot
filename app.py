@@ -27,9 +27,11 @@ app = Flask(__name__)
 app.secret_key = os.environ.get('SECRET_KEY', os.urandom(24))
 
 # Rate limiting (máximo 30 requests por minuto)
-limiter = Limiter(app=app)
-limiter.key_func = get_remote_address  # Configurar después
-limiter.default_limits = ["30 per minute"]
+limiter = Limiter(
+    app=app,
+    key_func=get_remote_address,  # <-- Esto es CLAVE
+    default_limits=["30 per minute"]
+)
 
 # Límite de tamaño de archivo (16MB)
 app.config['MAX_CONTENT_LENGTH'] = 16 * 1024 * 1024
