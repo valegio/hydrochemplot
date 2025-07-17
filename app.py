@@ -24,7 +24,7 @@ plt.switch_backend('Agg')
 matplotlib.rcParams['figure.max_open_warning'] = 0
 
 app = Flask(__name__)
-app.secret_key = os.environ.get('SECRET_KEY', 'fallback-key-change-in-production')
+app.secret_key = os.environ.get('SECRET_KEY', os.urandom(24))
 
 # Rate limiting (máximo 30 requests por minuto)
 limiter = Limiter(
